@@ -41,3 +41,6 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the Wikidotrb project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/r74tech/wikidotrb/blob/main/CODE_OF_CONDUCT.md).
+
+
+![Project analytics and stats](https://repobeats.axiom.co/api/embed/6bd929f1312a9c546b1c60801154e7fe1742fa65.svg "Repobeats analytics image")
