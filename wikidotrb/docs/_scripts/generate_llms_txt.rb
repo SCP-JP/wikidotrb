@@ -84,13 +84,12 @@ module LlmsTxtGenerator
       
       # Core Documentation section
       llms_txt_content << "## Documentation\n\n"
-      llms_txt_content << "- [API Reference](/api/yard/index.html)\n"
-      llms_txt_content << "- [Client Guide](/api/client.html)\n"
+      llms_txt_content << "- [API Reference](/index.html)\n"
       
       # Main Classes section
       llms_txt_content << "\n## Main Classes\n\n"
       all_primary.each do |mod|
-        path = "/api/yard/#{mod.path.gsub('::', '/')}.html"
+        path = "/#{mod.path.gsub('::', '/')}.html"
         llms_txt_content << "- [#{mod.path}](#{path})\n"
       end
       
@@ -99,7 +98,7 @@ module LlmsTxtGenerator
       
       # Utilities and support modules
       all_utility.each do |mod|
-        path = "/api/yard/#{mod.path.gsub('::', '/')}.html"
+        path = "/#{mod.path.gsub('::', '/')}.html"
         llms_txt_content << "- [#{mod.path}](#{path})\n"
       end
       
@@ -110,7 +109,7 @@ module LlmsTxtGenerator
       
       # Document primary modules first with more details
       all_primary.each do |mod|
-        path = "/api/yard/#{mod.path.gsub('::', '/')}.html"
+        path = "/#{mod.path.gsub('::', '/')}.html"
         llms_full_content << "# #{mod.path}\n"
         llms_full_content << "Source: #{path}\n\n"
         
