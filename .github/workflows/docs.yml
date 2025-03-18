@@ -26,6 +26,9 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,11 +45,9 @@ jobs:
       - name: Build Documentation
         run: |
           make docs
-          # Move the built site to the _site directory
-          mkdir -p _site
-          cp -R wikidotrb/docs/_site/* _site/ || true
-          # Ensure API docs are included (both HTML and Markdown)
+          # Create the deployment directory structure
           mkdir -p _site/api
+          # Copy the generated documentation (both HTML and Markdown)
           cp -R wikidotrb/docs/api/yard _site/api/
 
       - name: Upload artifact
