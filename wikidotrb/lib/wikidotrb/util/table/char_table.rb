@@ -3,7 +3,7 @@
 module Wikidotrb
   module Table
     module CharTable
-      # 特殊記号・非英語アルファベットを英語アルファベットに変換する
+      # Maps special characters and non-English alphabets to English alphabets
       SPECIAL_CHAR_MAP = {
         "À" => "a",
         "Á" => "a",
