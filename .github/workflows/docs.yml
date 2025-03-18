@@ -48,10 +48,8 @@ jobs:
             cp "$file" "$dir/index.html"
           done
           
-          # Fix all links to _index.html in all HTML files
-          find _site -name "*.html" -type f -exec sed -i 's/href="_index\.html"/href="index.html"/g' {} \;
-          find _site -name "*.html" -type f -exec sed -i "s/href='_index\.html'/href='index.html'/g" {} \;
-
+          # Replace _index.html links in all HTML files - comprehensive sed pattern
+          find _site -name "*.html" -type f | xargs sed -i 's/\(href=["'"'"']\)\([^"'"'"']*\)_index\.html\(["'"'"']\)/\1\2index.html\3/g'
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
