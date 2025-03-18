@@ -2,14 +2,14 @@ name: Documentation
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'lib/**'
-      - 'sig/**'
-      - 'docs/**'
-      - '*.gemspec'
-      - 'Gemfile'
-      - '.yardopts'
+      - "lib/**"
+      - "sig/**"
+      - "docs/**"
+      - "*.gemspec"
+      - "Gemfile"
+      - ".yardopts"
   # Allow manual trigger
   workflow_dispatch:
 
@@ -29,16 +29,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: "3.2"
           bundler-cache: true
-      
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      
+
       - name: Build Documentation
         run: |
           make docs
@@ -48,7 +48,7 @@ jobs:
           # Ensure API docs are included (both HTML and Markdown)
           mkdir -p _site/api
           cp -R wikidotrb/docs/api/yard _site/api/
-      
+
       - name: Generate LLM files
         run: |
           make generate-llms-txt
@@ -64,10 +64,15 @@ jobs:
           # Copy llms files to site root
           cp wikidotrb/llms.txt _site/
           cp wikidotrb/llms-full.txt _site/
-      
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: _site
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
