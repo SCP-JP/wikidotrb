@@ -42,9 +42,16 @@ jobs:
           # Copy documentation directly to the site root
           cp -R wikidotrb/docs/api/yard/* _site/
 
+          # Copy all _index.html files to index.html in their respective directories
+          find _site -name "_index.html" -type f | while read file; do
+            dir=$(dirname "$file")
+            cp "$file" "$dir/index.html"
+          done
+          
           # Fix all links to _index.html in all HTML files
           find _site -name "*.html" -type f -exec sed -i 's/href="_index\.html"/href="index.html"/g' {} \;
           find _site -name "*.html" -type f -exec sed -i "s/href='_index\.html'/href='index.html'/g" {} \;
+
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
