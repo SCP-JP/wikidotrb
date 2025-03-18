@@ -49,22 +49,6 @@ jobs:
           mkdir -p _site/api
           cp -R wikidotrb/docs/api/yard _site/api/
 
-      - name: Generate LLM files
-        run: |
-          make generate-llms-txt
-          # Verify llms.txt files are in place
-          if [ ! -f wikidotrb/llms.txt ]; then
-            echo "ERROR: llms.txt not found"
-            exit 1
-          fi
-          if [ ! -f wikidotrb/llms-full.txt ]; then
-            echo "ERROR: llms-full.txt not found"
-            exit 1
-          fi
-          # Copy llms files to site root
-          cp wikidotrb/llms.txt _site/
-          cp wikidotrb/llms-full.txt _site/
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
