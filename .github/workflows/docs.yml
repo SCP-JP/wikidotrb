@@ -42,10 +42,6 @@ jobs:
           # Copy documentation directly to the site root
           cp -R wikidotrb/docs/api/yard/* _site/
 
-          # Create redirect from root to index.html
-          echo '<meta http-equiv="refresh" content="0;url=index.html">' > _site/index.html
-
-
           # Fix all links to _index.html in all HTML files
           find _site -name "*.html" -type f -exec sed -i 's/href="_index\.html"/href="index.html"/g' {} \;
           find _site -name "*.html" -type f -exec sed -i "s/href='_index\.html'/href='index.html'/g" {} \;
