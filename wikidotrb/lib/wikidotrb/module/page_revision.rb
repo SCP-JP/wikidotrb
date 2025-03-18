@@ -9,18 +9,18 @@ module Wikidotrb
     class PageRevisionCollection < Array
       attr_accessor :page
 
-      # 初期化メソッド
-      # @param page [Page] ページオブジェクト
-      # @param revisions [Array<PageRevision>] リビジョンのリスト
+      # Initialization method
+      # @param page [Page] Page object
+      # @param revisions [Array<PageRevision>] List of revisions
       def initialize(page: nil, revisions: [])
         super(revisions)
         @page = page || revisions.first.page
       end
 
-      # ソースを取得して設定する
-      # @param page [Page] ページオブジェクト
-      # @param revisions [Array<PageRevision>] リビジョンのリスト
-      # @return [Array<PageRevision>] 更新されたリビジョンのリスト
+      # Retrieve and set sources
+      # @param page [Page] Page object
+      # @param revisions [Array<PageRevision>] List of revisions
+      # @return [Array<PageRevision>] Updated list of revisions
       def self.acquire_sources(page:, revisions:)
         target_revisions = revisions.reject(&:source_acquired?)
 
@@ -44,10 +44,10 @@ module Wikidotrb
         revisions
       end
 
-      # HTMLを取得して設定する
-      # @param page [Page] ページオブジェクト
-      # @param revisions [Array<PageRevision>] リビジョンのリスト
-      # @return [Array<PageRevision>] 更新されたリビジョンのリスト
+      # Retrieve and set HTML
+      # @param page [Page] Page object
+      # @param revisions [Array<PageRevision>] List of revisions
+      # @return [Array<PageRevision>] Updated list of revisions
       def self.acquire_htmls(page:, revisions:)
         target_revisions = revisions.reject(&:html_acquired?)
 
@@ -61,7 +61,7 @@ module Wikidotrb
 
         responses.each_with_index do |response, index|
           body = response["body"]
-          # HTMLソースの抽出
+          # Extract HTML source
           source = body.split(
             "onclick=\"document.getElementById('page-version-info').style.display='none'\">",
             2
@@ -72,12 +72,12 @@ module Wikidotrb
         revisions
       end
 
-      # ソースをリビジョンに取得する
+      # Retrieve sources for revisions
       def get_sources
         PageRevisionCollection.acquire_sources(page: @page, revisions: self)
       end
 
-      # HTMLをリビジョンに取得する
+      # Retrieve HTML for revisions
       def get_htmls
         PageRevisionCollection.acquire_htmls(page: @page, revisions: self)
       end
@@ -86,15 +86,15 @@ module Wikidotrb
     class PageRevision
       attr_accessor :page, :id, :rev_no, :created_by, :created_at, :comment, :source, :html
 
-      # 初期化メソッド
-      # @param page [Page] ページオブジェクト
-      # @param id [Integer] リビジョンID
-      # @param rev_no [Integer] リビジョン番号
-      # @param created_by [AbstractUser] 作成者
-      # @param created_at [DateTime] 作成日時
-      # @param comment [String] コメント
-      # @param source [PageSource, nil] ページソース
-      # @param html [String, nil] HTMLソース
+      # Initialization method
+      # @param page [Page] Page object
+      # @param id [Integer] Revision ID
+      # @param rev_no [Integer] Revision number
+      # @param created_by [AbstractUser] Creator
+      # @param created_at [DateTime] Creation date and time
+      # @param comment [String] Comment
+      # @param source [PageSource, nil] Page source
+      # @param html [String, nil] HTML source
       def initialize(page:, id:, rev_no:, created_by:, created_at:, comment:, source: nil, html: nil)
         @page = page
         @id = id
@@ -106,37 +106,37 @@ module Wikidotrb
         @html = html
       end
 
-      # ソースの取得状況を確認する
-      # @return [Boolean] ソースが取得済みかどうか
+      # Check if source has been retrieved
+      # @return [Boolean] Whether the source has been retrieved
       def source_acquired?
         !@source.nil?
       end
 
-      # HTMLの取得状況を確認する
-      # @return [Boolean] HTMLが取得済みかどうか
+      # Check if HTML has been retrieved
+      # @return [Boolean] Whether the HTML has been retrieved
       def html_acquired?
         !@html.nil?
       end
 
-      # ソースのゲッターメソッド
-      # ソースが取得されていなければ取得する
-      # @return [PageSource] ソースオブジェクト
+      # Source getter method
+      # Retrieve source if not already retrieved
+      # @return [PageSource] Source object
       def source
         PageRevisionCollection.new(page: @page, revisions: [self]).get_sources unless source_acquired?
         @source
       end
 
-      # ソースのセッターメソッド
+      # Source setter method
 
-      # HTMLのゲッターメソッド
-      # HTMLが取得されていなければ取得する
-      # @return [String] HTMLソース
+      # HTML getter method
+      # Retrieve HTML if not already retrieved
+      # @return [String] HTML source
       def html
         PageRevisionCollection.new(page: @page, revisions: [self]).get_htmls unless html_acquired?
         @html
       end
 
-      # HTMLのセッターメソッド
+      # HTML setter method
     end
   end
 end

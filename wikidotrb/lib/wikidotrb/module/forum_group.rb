@@ -9,17 +9,17 @@ module Wikidotrb
     class ForumGroupCollection < Array
       attr_accessor :forum
 
-      # 初期化メソッド
-      # @param forum [Forum] フォーラムオブジェクト
-      # @param groups [Array<ForumGroup>] グループのリスト
+      # Initialization method
+      # @param forum [Forum] Forum object
+      # @param groups [Array<ForumGroup>] List of groups
       def initialize(forum:, groups: [])
         super(groups)
         @forum = forum
       end
 
-      # サイトとフォーラムからグループを取得
-      # @param site [Site] サイトオブジェクト
-      # @param forum [Forum] フォーラムオブジェクト
+      # Get groups from site and forum
+      # @param site [Site] Site object
+      # @param forum [Forum] Forum object
       def self.get_groups(site:, forum:)
         groups = []
 
@@ -73,20 +73,20 @@ module Wikidotrb
         forum._groups = ForumGroupCollection.new(forum: forum, groups: groups)
       end
 
-      # グループをタイトルと説明から検索
-      # @param title [String] グループのタイトル
-      # @param description [String] グループの説明
-      # @return [ForumGroup, nil] 見つかったグループ
+      # Search for a group by title and description
+      # @param title [String] Group title
+      # @param description [String] Group description
+      # @return [ForumGroup, nil] Found group or nil
       def find(title: nil, description: nil)
         find do |group|
           (title.nil? || group.title == title) && (description.nil? || group.description == description)
         end
       end
 
-      # 条件に一致するすべてのグループを検索
-      # @param title [String] グループのタイトル
-      # @param description [String] グループの説明
-      # @return [Array<ForumGroup>] 見つかったグループのリスト
+      # Search for all groups matching the conditions
+      # @param title [String] Group title
+      # @param description [String] Group description
+      # @return [Array<ForumGroup>] List of found groups
       def findall(title: nil, description: nil)
         select do |group|
           (title.nil? || group.title == title) && (description.nil? || group.description == description)

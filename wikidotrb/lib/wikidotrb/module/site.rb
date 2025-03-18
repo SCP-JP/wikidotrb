@@ -14,9 +14,9 @@ module Wikidotrb
         @site = site
       end
 
-      # ページを検索する
-      # @param kwargs [Hash] 検索クエリのパラメータ
-      # @return [PageCollection] ページのコレクション
+      # Search for pages
+      # @param kwargs [Hash] Search query parameters
+      # @return [PageCollection] Collection of pages
       def search(**kwargs)
         query = SearchPagesQuery.new(**kwargs)
         PageCollection.search_pages(@site, query)
@@ -28,10 +28,10 @@ module Wikidotrb
         @site = site
       end
 
-      # フルネームからページを取得する
-      # @param fullname [String] ページのフルネーム
-      # @param raise_when_not_found [Boolean] ページが見つからない場合に例外を発生させるかどうか
-      # @return [Page, nil] ページオブジェクト、もしくはnil
+      # Get a page by its fullname
+      # @param fullname [String] Page fullname
+      # @param raise_when_not_found [Boolean] Whether to raise an exception when the page is not found
+      # @return [Page, nil] Page object or nil
       def get(fullname, raise_when_not_found: true)
         res = PageCollection.search_pages(@site, Wikidotrb::Module::SearchPagesQuery.new(fullname: fullname))
 
@@ -44,13 +44,13 @@ module Wikidotrb
         res.first
       end
 
-      # ページを作成する
-      # @param fullname [String] ページのフルネーム
-      # @param title [String] ページのタイトル
-      # @param source [String] ページのソース
-      # @param comment [String] コメント
-      # @param force_edit [Boolean] ページが存在する場合に上書きするかどうか
-      # @return [Page] 作成されたページオブジェクト
+      # Create a page
+      # @param fullname [String] Page fullname
+      # @param title [String] Page title
+      # @param source [String] Page source
+      # @param comment [String] Comment
+      # @param force_edit [Boolean] Whether to overwrite the page if it already exists
+      # @return [Page] Created page object
       def create(fullname:, title: "", source: "", comment: "", force_edit: false)
         Page.create_or_edit(
           site: @site,
@@ -86,25 +86,25 @@ module Wikidotrb
         "Site(id=#{id}, title=#{title}, unix_name=#{unix_name})"
       end
 
-      # UNIX名からサイトオブジェクトを取得する
-      # @param client [Client] クライアント
-      # @param unix_name [String] サイトのUNIX名
-      # @return [Site] サイトオブジェクト
+      # Get a site object by its UNIX name
+      # @param client [Client] The client
+      # @param unix_name [String] Site UNIX name
+      # @return [Site] Site object
       def self.from_unix_name(client:, unix_name:)
         url = "http://#{unix_name}.wikidot.com"
         timeout = { connect: client.amc_client.config.request_timeout }
         response = HTTPX.with(timeout: timeout).get(url)
 
-        # リダイレクトの対応
+        # Handle redirects
         while response.status >= 300 && response.status < 400
           url = response.headers["location"]
           response = HTTPX.with(timeout: timeout).get(url)
         end
 
-        # サイトが存在しない場合
+        # If the site doesn't exist
         raise Wikidotrb::Common::Exceptions::NotFoundException, "Site is not found: #{unix_name}.wikidot.com" if response.status == 404
 
-        # サイトが存在する場合
+        # If the site exists
         source = response.body.to_s
 
         # id : WIKIREQUEST.info.siteId = xxxx;
@@ -113,7 +113,7 @@ module Wikidotrb
 
         site_id = id_match[1].to_i
 
-        # title : titleタグ
+        # title: title tag
         title_match = source.match(%r{<title>(.*?)</title>})
         raise Wikidotrb::Common::Exceptions::UnexpectedException, "Cannot find site title: #{unix_name}.wikidot.com" if title_match.nil?
 
@@ -134,7 +134,7 @@ module Wikidotrb
 
         domain = domain_match[1]
 
-        # SSL対応チェック
+        # Check SSL support
         ssl_supported = response.uri.to_s.start_with?("https")
 
         new(
@@ -147,9 +147,9 @@ module Wikidotrb
         )
       end
 
-      # このサイトに対してAMCリクエストを実行する
-      # @param bodies [Array<Hash>] リクエストボディのリスト
-      # @param return_exceptions [Boolean] 例外を返すかどうか
+      # Execute an AMC request for this site
+      # @param bodies [Array<Hash>] List of request bodies
+      # @param return_exceptions [Boolean] Whether to return exceptions
       def amc_request(bodies:, return_exceptions: false)
         client.amc_client.request(
           bodies: bodies,
@@ -159,15 +159,15 @@ module Wikidotrb
         )
       end
 
-      # サイトへの未処理の参加申請を取得する
-      # @return [Array<SiteApplication>] 未処理の申請リスト
+      # Get pending membership applications for the site
+      # @return [Array<SiteApplication>] List of pending applications
       def get_applications
         SiteApplication.acquire_all(site: self)
       end
 
-      # ユーザーをサイトに招待する
-      # @param user [User] 招待するユーザー
-      # @param text [String] 招待文
+      # Invite a user to the site
+      # @param user [User] User to invite
+      # @param text [String] Invitation text
       def invite_user(user:, text:)
         amc_request(
           bodies: [{
@@ -193,13 +193,13 @@ module Wikidotrb
         end
       end
 
-      # サイトのURLを取得する
-      # @return [String] サイトのURL
+      # Get the site URL
+      # @return [String] Site URL
       def get_url
         "http#{ssl_supported ? "s" : ""}://#{domain}"
       end
 
-      # `invite_user`にデコレータを適用
+      # Apply decorator to `invite_user`
       login_required :invite_user
       login_required :get_applications
     end

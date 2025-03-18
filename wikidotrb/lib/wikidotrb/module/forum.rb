@@ -7,15 +7,15 @@ require_relative "forum_thread"
 module Wikidotrb
   module Module
     class ForumCategoryMethods
-      # 初期化メソッド
-      # @param forum [Forum] フォーラムオブジェクト
+      # Initialization method
+      # @param forum [Forum] Forum object
       def initialize(forum)
         @forum = forum
       end
 
-      # カテゴリをIDから取得
-      # @param id [Integer] カテゴリID
-      # @return [ForumCategory] 更新されたカテゴリ
+      # Get category by ID
+      # @param id [Integer] Category ID
+      # @return [ForumCategory] Updated category
       def get(id)
         category = ForumCategory.new(
           site: @forum.site,
@@ -27,15 +27,15 @@ module Wikidotrb
     end
 
     class ForumThreadMethods
-      # 初期化メソッド
-      # @param forum [Forum] フォーラムオブジェクト
+      # Initialization method
+      # @param forum [Forum] Forum object
       def initialize(forum)
         @forum = forum
       end
 
-      # スレッドをIDから取得
-      # @param id [Integer] スレッドID
-      # @return [ForumThread] 更新されたスレッド
+      # Get thread by ID
+      # @param id [Integer] Thread ID
+      # @return [ForumThread] Updated thread
       def get(id)
         thread = ForumThread.new(
           site: @forum.site,
@@ -49,8 +49,8 @@ module Wikidotrb
     class Forum
       attr_accessor :site, :_groups, :_categories
 
-      # 初期化メソッド
-      # @param site [Site] サイトオブジェクト
+      # Initialization method
+      # @param site [Site] Site object
       def initialize(site:)
         @site = site
         @name = "Forum"
@@ -60,29 +60,29 @@ module Wikidotrb
         @thread = ForumThreadMethods.new(self)
       end
 
-      # カテゴリメソッドオブジェクトを取得
-      # @return [ForumCategoryMethods] カテゴリメソッド
+      # Get category method object
+      # @return [ForumCategoryMethods] Category method
       attr_reader :category
 
-      # スレッドメソッドオブジェクトを取得
-      # @return [ForumThreadMethods] スレッドメソッド
+      # Get thread method object
+      # @return [ForumThreadMethods] Thread method
       attr_reader :thread
 
-      # フォーラムのURLを取得
-      # @return [String] フォーラムのURL
+      # Get forum URL
+      # @return [String] Forum URL
       def get_url
         "#{@site.get_url}/forum/start"
       end
 
-      # グループのプロパティ
-      # @return [ForumGroupCollection] グループコレクション
+      # Group property
+      # @return [ForumGroupCollection] Group collection
       def groups
         ForumGroupCollection.get_groups(site: @site, forum: self) if @_groups.nil?
         @_groups
       end
 
-      # カテゴリのプロパティ
-      # @return [ForumCategoryCollection] カテゴリコレクション
+      # Category property
+      # @return [ForumCategoryCollection] Category collection
       def categories
         ForumCategoryCollection.get_categories(site: @site, forum: self) if @_categories.nil?
         @_categories

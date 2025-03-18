@@ -2,12 +2,12 @@
 
 module Wikidotrb
   module Connector
-    # APIキーのオブジェクト
+    # API key object
     class APIKeys
-      # 読み取り専用の属性
+      # Read-only attributes
       attr_reader :ro_key, :rw_key
 
-      # 初期化
+      # Initialize
       # @param ro_key [String] Read Only Key
       # @param rw_key [String] Read-Write Key
       def initialize(ro_key:, rw_key:)

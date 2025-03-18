@@ -13,26 +13,26 @@ require_relative "../util/parser/odate"
 module Wikidotrb
   module Module
     DEFAULT_MODULE_BODY = [
-      "fullname",  # ページのフルネーム(str)
-      "category",  # カテゴリ(str)
-      "name", # ページ名(str)
-      "title", # タイトル(str)
-      "created_at", # 作成日時(odate element)
-      "created_by_linked", # 作成者(user element)
-      "updated_at", # 更新日時(odate element)
-      "updated_by_linked", # 更新者(user element)
-      "commented_at", # コメント日時(odate element)
-      "commented_by_linked", # コメントしたユーザ(user element)
-      "parent_fullname", # 親ページのフルネーム(str)
-      "comments", # コメント数(int)
-      "size", # サイズ(int)
-      "children", # 子ページ数(int)
-      "rating_votes", # 投票数(int)
-      "rating", # レーティング(int or float)
-      "rating_percent", # 5つ星レーティング(%)
-      "revisions", # リビジョン数(int)
-      "tags", # タグのリスト(list of str)
-      "_tags" # 隠しタグのリスト(list of str)
+      "fullname",  # Page full name (str)
+      "category",  # Category (str)
+      "name", # Page name (str)
+      "title", # Title (str)
+      "created_at", # Creation date (odate element)
+      "created_by_linked", # Creator (user element)
+      "updated_at", # Update date (odate element)
+      "updated_by_linked", # Updater (user element)
+      "commented_at", # Comment date (odate element)
+      "commented_by_linked", # Commenter (user element)
+      "parent_fullname", # Parent page full name (str)
+      "comments", # Comment count (int)
+      "size", # Size (int)
+      "children", # Child page count (int)
+      "rating_votes", # Vote count (int)
+      "rating", # Rating (int or float)
+      "rating_percent", # 5-star rating (%)
+      "revisions", # Revision count (int)
+      "tags", # Tag list (list of str)
+      "_tags" # Hidden tag list (list of str)
     ].freeze
 
     class SearchPagesQuery
@@ -86,10 +86,10 @@ module Wikidotrb
         html_body.css("div.page").each do |page_element|
           page_params = {}
 
-          # レーティング方式を判定
+          # Determine rating method
           is_5star_rating = !page_element.css("span.rating span.page-rate-list-pages-start").empty?
 
-          # 各値を取得
+          # Get each value
           page_element.css("span.set").each do |set_element|
             key = set_element.css("span.name").text.strip
             value_element = set_element.css("span.value")
@@ -119,7 +119,7 @@ module Wikidotrb
                       value_element.text.strip
                     end
 
-            # keyを変換
+            # Convert key
             key = key.gsub("_linked", "") if key.include?("_linked")
             key = "#{key}_count" if %w[comments children revisions].include?(key)
             key = "votes_count" if key == "rating_votes"
@@ -127,11 +127,11 @@ module Wikidotrb
             page_params[key.to_sym] = value
           end
 
-          # タグのリストを統合
+          # Integrate tag lists
           page_params[:tags] ||= []
           page_params[:tags] += page_params.delete(:_tags) || []
 
-          # ページオブジェクトを作成
+          # Create page object
           pages << Page.new(site: site, **page_params)
         end
 
@@ -139,24 +139,22 @@ module Wikidotrb
       end
 
       def self.search_pages(site, query = SearchPagesQuery.new)
-        # クエリの初期化
+        # Initialize query
         query_dict = query.to_h
         query_dict["moduleName"] = "list/ListPagesModule"
-        query_dict["module_body"] = %(
-          [[div class="page"]]
-          #{DEFAULT_MODULE_BODY.map do |key|
-            %(
-            [[span class="set #{key}"]]
-              [[span class="name"]]#{key}[[/span]]
-              [[span class="value"]]%%#{key}%%[[/span]]
-            [[/span]]
-          )
-          end.join("\n")}
-          [[/div]]
-        )
+        query_dict["module_body"] = %([[div class="page"]]#{
+          DEFAULT_MODULE_BODY.map do |key|
+            <<~WIKIDOT.chomp
+              [[span class="set #{key}"]]
+                [[span class="name"]]#{key}[[/span]]
+                [[span class="value"]]%%#{key}%%[[/span]]
+              [[/span]]
+            WIKIDOT
+          end.join
+        }[[/div]])
 
         begin
-          # 初回リクエスト
+          # Initial request
           response_data = site.amc_request(bodies: [query_dict])[0]
         rescue Wikidotrb::Common::Exceptions::WikidotStatusCodeException => e
           raise Wikidotrb::Common::Exceptions::ForbiddenException, "Failed to get pages, target site may be private" if e.status_code == "not_ok"
@@ -170,14 +168,14 @@ module Wikidotrb
         total = 1
         html_bodies = [first_page_html_body]
 
-        # pagerの存在を確認
+        # Check for pager existence
         pager_element = first_page_html_body.css("div.pager")
         unless pager_element.empty?
-          # 最大ページ数を取得
+          # Get maximum page number
           total = pager_element.css("span.target")[-2].css("a").text.to_i
         end
 
-        # 複数ページが存在する場合はリクエストを繰り返す
+        # If multiple pages exist, repeat requests
         if total > 1
           request_bodies = []
           (1...total).each do |i|
@@ -190,12 +188,12 @@ module Wikidotrb
           html_bodies.concat(responses.map { |response| Nokogiri::HTML(response["body"]) })
         end
 
-        # 全てのHTMLボディをパースしてページコレクションを作成
+        # Parse all HTML bodies and create page collection
         pages = html_bodies.flat_map { |html_body| parse(site, html_body) }
         new(site: site, pages: pages)
       end
 
-      # メソッドを定義する部分の修正
+      # Modification of method definition part
       def get_page_sources
         PageCollection.acquire_page_sources(@site, self)
       end
@@ -267,7 +265,7 @@ module Wikidotrb
               "moduleName" => "history/PageRevisionListModule",
               "page_id" => page.id,
               "options" => { "all" => true },
-              "perpage" => 100_000_000 # pagerを使わずに全て取得
+              "perpage" => 100_000_000 # Get all without using pager
             }
           end
         )
@@ -446,7 +444,7 @@ module Wikidotrb
       end
 
       def latest_revision
-        # revision_countとrev_noが一致するものを取得
+        # Get the one where revision_count and rev_no match
         @revisions.each do |revision|
           return revision if revision.rev_no == @revisions_count
         end
@@ -573,7 +571,6 @@ module Wikidotrb
 
         res[0]
       end
-
 
       def edit(title: nil, source: nil, comment: nil, force_edit: false)
         title ||= @title

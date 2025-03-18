@@ -1,0 +1,73 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'lib/**'
+      - 'sig/**'
+      - 'docs/**'
+      - '*.gemspec'
+      - 'Gemfile'
+      - '.yardopts'
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Build Documentation
+        run: |
+          make docs
+          # Move the built site to the _site directory
+          mkdir -p _site
+          cp -R wikidotrb/docs/_site/* _site/ || true
+          # Ensure API docs are included (both HTML and Markdown)
+          mkdir -p _site/api
+          cp -R wikidotrb/docs/api/yard _site/api/
+      
+      - name: Generate LLM files
+        run: |
+          make generate-llms-txt
+          # Verify llms.txt files are in place
+          if [ ! -f wikidotrb/llms.txt ]; then
+            echo "ERROR: llms.txt not found"
+            exit 1
+          fi
+          if [ ! -f wikidotrb/llms-full.txt ]; then
+            echo "ERROR: llms-full.txt not found"
+            exit 1
+          fi
+          # Copy llms files to site root
+          cp wikidotrb/llms.txt _site/
+          cp wikidotrb/llms-full.txt _site/
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

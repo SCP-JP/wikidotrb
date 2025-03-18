@@ -3,57 +3,57 @@
 require "httpx"
 require "json"
 
-# QMCUser構造体の定義
+# Definition of QMCUser struct
 QMCUser = Struct.new(:id, :name, keyword_init: true)
 
-# QMCPage構造体の定義
+# Definition of QMCPage struct
 QMCPage = Struct.new(:title, :unix_name, keyword_init: true)
 
 class QuickModule
-  # リクエストを送信する
-  # @param module_name [String] モジュール名
-  # @param site_id [Integer] サイトID
-  # @param query [String] クエリ
-  # @return [Hash] レスポンスのJSONパース結果
+  # Send request
+  # @param module_name [String] Module name
+  # @param site_id [Integer] Site ID
+  # @param query [String] Query
+  # @return [Hash] JSON-parsed response result
   def self._request(module_name:, site_id:, query:)
-    # 有効なモジュール名か確認
+    # Check if module name is valid
     raise ArgumentError, "Invalid module name" unless %w[MemberLookupQModule UserLookupQModule PageLookupQModule].include?(module_name)
 
-    # リクエストURLの構築
+    # Build request URL
     url = "https://www.wikidot.com/quickmodule.php?module=#{module_name}&s=#{site_id}&q=#{query}"
 
-    # HTTPリクエストの送信
+    # Send HTTP request
     response = HTTPX.get(url, timeout: { operation: 300 })
 
-    # ステータスコードのチェック
+    # Check status code
     raise ArgumentError, "Site is not found" if response.status == 500
 
-    # JSONレスポンスのパース
+    # Parse JSON response
     JSON.parse(response.body.to_s)
   end
 
-  # メンバーを検索する
-  # @param site_id [Integer] サイトID
-  # @param query [String] クエリ
-  # @return [Array<QMCUser>] ユーザーのリスト
+  # Search for members
+  # @param site_id [Integer] Site ID
+  # @param query [String] Query
+  # @return [Array<QMCUser>] List of users
   def self.member_lookup(site_id:, query:)
     users = _request(module_name: "MemberLookupQModule", site_id: site_id, query: query)["users"]
     users.map { |user| QMCUser.new(id: user["user_id"].to_i, name: user["name"]) }
   end
 
-  # ユーザーを検索する
-  # @param site_id [Integer] サイトID
-  # @param query [String] クエリ
-  # @return [Array<QMCUser>] ユーザーのリスト
+  # Search for users
+  # @param site_id [Integer] Site ID
+  # @param query [String] Query
+  # @return [Array<QMCUser>] List of users
   def self.user_lookup(site_id:, query:)
     users = _request(module_name: "UserLookupQModule", site_id: site_id, query: query)["users"]
     users.map { |user| QMCUser.new(id: user["user_id"].to_i, name: user["name"]) }
   end
 
-  # ページを検索する
-  # @param site_id [Integer] サイトID
-  # @param query [String] クエリ
-  # @return [Array<QMCPage>] ページのリスト
+  # Search for pages
+  # @param site_id [Integer] Site ID
+  # @param query [String] Query
+  # @return [Array<QMCPage>] List of pages
   def self.page_lookup(site_id:, query:)
     pages = _request(module_name: "PageLookupQModule", site_id: site_id, query: query)["pages"]
     pages.map { |page| QMCPage.new(title: page["title"], unix_name: page["unix_name"]) }

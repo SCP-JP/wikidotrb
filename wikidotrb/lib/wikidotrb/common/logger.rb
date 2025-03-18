@@ -4,14 +4,14 @@ require "logger"
 
 module Wikidotrb
   module Common
-    # Logger設定
+    # Logger Configuration
     def self.setup_logger(name = "wikidot", level = Logger::INFO)
-      # ロガーの作成
+      # Create logger
       _logger = Logger.new($stdout)
       _logger.progname = name
       _logger.level = level
 
-      # ログフォーマット
+      # Log format
       _logger.formatter = proc do |severity, datetime, progname, msg|
         "#{datetime} [#{progname}/#{severity}] #{msg}\n"
       end
@@ -19,7 +19,7 @@ module Wikidotrb
       _logger
     end
 
-    # ロガーの初期化
+    # Initialize logger
     Logger = setup_logger
   end
 end

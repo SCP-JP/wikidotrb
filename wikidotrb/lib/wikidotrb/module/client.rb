@@ -17,18 +17,18 @@ module Wikidotrb
         @client = client
       end
 
-      # ユーザー名からユーザーオブジェクトを取得する
-      # @param name [String] ユーザー名
-      # @param raise_when_not_found [Boolean] ユーザーが見つからない場合に例外を送出するか
-      # @return [User] ユーザーオブジェクト
+      # Get a user object from a username
+      # @param name [String] Username
+      # @param raise_when_not_found [Boolean] Whether to raise an exception when the user is not found
+      # @return [User] User object
       def get(name, raise_when_not_found: false)
         Wikidotrb::Module::User.from_name(@client, name, raise_when_not_found)
       end
 
-      # ユーザー名からユーザーオブジェクトを取得する
-      # @param names [Array<String>] ユーザー名のリスト
-      # @param raise_when_not_found [Boolean] ユーザーが見つからない場合に例外を送出するか
-      # @return [Array<User>] ユーザーオブジェクトのリスト
+      # Get user objects from a list of usernames
+      # @param names [Array<String>] List of usernames
+      # @param raise_when_not_found [Boolean] Whether to raise an exception when a user is not found
+      # @return [Array<User>] List of user objects
       def get_bulk(names, raise_when_not_found: false)
         Wikidotrb::Module::UserCollection.from_names(@client, names, raise_when_not_found)
       end
@@ -41,38 +41,38 @@ module Wikidotrb
         @client = client
       end
 
-      # メッセージを送信する
-      # @param recipient [User] 受信者
-      # @param subject [String] 件名
-      # @param body [String] 本文
+      # Send a message
+      # @param recipient [User] Recipient
+      # @param subject [String] Subject
+      # @param body [String] Message body
       def send_message(recipient, subject, body)
         Wikidotrb::Module::PrivateMessage.send_message(
           client: @client, recipient: recipient, subject: subject, body: body
         )
       end
 
-      # 受信箱を取得する
-      # @return [PrivateMessageInbox] 受信箱
+      # Get inbox
+      # @return [PrivateMessageInbox] Inbox
       def get_inbox
         Wikidotrb::Module::PrivateMessageInbox.acquire(client: @client)
       end
 
-      # 送信箱を取得する
-      # @return [PrivateMessageSentBox] 送信箱
+      # Get sent box
+      # @return [PrivateMessageSentBox] Sent box
       def get_sentbox
         Wikidotrb::Module::PrivateMessageSentBox.acquire(client: @client)
       end
 
-      # メッセージを取得する
-      # @param message_ids [Array<Integer>] メッセージIDのリスト
-      # @return [PrivateMessageCollection] メッセージのリスト
+      # Get messages
+      # @param message_ids [Array<Integer>] List of message IDs
+      # @return [PrivateMessageCollection] List of messages
       def get_messages(message_ids)
         Wikidotrb::Module::PrivateMessageCollection.from_ids(client: @client, message_ids: message_ids)
       end
 
-      # メッセージを取得する
-      # @param message_id [Integer] メッセージID
-      # @return [PrivateMessage] メッセージ
+      # Get a message
+      # @param message_id [Integer] Message ID
+      # @return [PrivateMessage] Message
       def get_message(message_id)
         Wikidotrb::Module::PrivateMessage.from_id(client: @client, message_id: message_id)
       end
@@ -85,9 +85,9 @@ module Wikidotrb
         @client = client
       end
 
-      # UNIX名からサイトオブジェクトを取得する
-      # @param unix_name [String] サイトのUNIX名
-      # @return [Site] サイトオブジェクト
+      # Get a site object from a UNIX name
+      # @param unix_name [String] Site UNIX name
+      # @return [Site] Site object
       def get(unix_name)
         Wikidotrb::Module::Site.from_unix_name(client: client, unix_name: unix_name)
       end
@@ -97,32 +97,32 @@ module Wikidotrb
       attr_accessor :amc_client, :is_logged_in, :username
       attr_reader :user, :private_message, :site
 
-      # 基幹クライアント
+      # Core client
       def initialize(username: nil, password: nil, amc_config: nil, logging_level: "WARN")
-        # 最初にロギングレベルを決定する
+        # First determine the logging level
         Wikidotrb::Common::Logger.level = logging_level
 
-        # AMCClientを初期化
+        # Initialize AMCClient
         @amc_client = Wikidotrb::Connector::AjaxModuleConnectorClient.new(site_name: "www", config: amc_config)
 
-        # セッション関連変数の初期化
+        # Initialize session-related variables
         @is_logged_in = false
         @username = nil
 
-        # usernameとpasswordが指定されていればログインする
+        # Login if username and password are specified
         if username && password
           Wikidotrb::Module::HTTPAuthentication.login(self, username, password)
           @is_logged_in = true
           @username = username
         end
 
-        # メソッドの定義
+        # Define methods
         @user = ClientUserMethods.new(self)
         @private_message = ClientPrivateMessageMethods.new(self)
         @site = ClientSiteMethods.new(self)
       end
 
-      # デストラクタ
+      # Destructor
       def finalize
         return unless @is_logged_in
 
@@ -135,7 +135,7 @@ module Wikidotrb
         "Client(username=#{@username}, is_logged_in=#{@is_logged_in})"
       end
 
-      # ログインチェック
+      # Login check
       def login_check
         raise Wikidotrb::Common::Exceptions::LoginRequiredException, "Login is required to execute this function" unless @is_logged_in
 

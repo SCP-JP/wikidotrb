@@ -1,0 +1,11 @@
+--markup markdown
+--markup-provider redcarpet
+--title "Wikidotrb Documentation"
+--protected
+--private
+--hide-void-return
+--embed-mixins
+--exclude /vendor/
+lib/**/*.rb
+-
+CHANGELOG.md

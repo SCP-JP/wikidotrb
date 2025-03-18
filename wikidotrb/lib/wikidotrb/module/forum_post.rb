@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+の# frozen_string_literal: true
 
 require "nokogiri"
 require "date"
@@ -9,25 +9,25 @@ module Wikidotrb
     class ForumPostCollection < Array
       attr_accessor :thread
 
-      # 初期化メソッド
-      # @param thread [ForumThread] スレッドオブジェクト
-      # @param posts [Array<ForumPost>] 投稿オブジェクトのリスト
+      # Initialization method
+      # @param thread [ForumThread] Thread object
+      # @param posts [Array<ForumPost>] List of post objects
       def initialize(thread:, posts: [])
         super(posts)
         @thread = thread
       end
 
-      # IDで投稿を検索する
-      # @param target_id [Integer] 投稿ID
-      # @return [ForumPost, nil] 投稿が見つかった場合はForumPostオブジェクト、見つからなければnil
+      # Search for a post by ID
+      # @param target_id [Integer] Post ID
+      # @return [ForumPost, nil] ForumPost object if the post is found, nil otherwise
       def find(target_id)
         find { |post| post.id == target_id }
       end
 
-      # 親投稿を取得して設定する
-      # @param thread [ForumThread] スレッドオブジェクト
-      # @param posts [Array<ForumPost>] 投稿オブジェクトのリスト
-      # @return [Array<ForumPost>] 更新された投稿のリスト
+      # Retrieve and set parent post
+      # @param thread [ForumThread] Thread object
+      # @param posts [Array<ForumPost>] List of post objects
+      # @return [Array<ForumPost>] Updated list of posts
       def self.acquire_parent_post(thread:, posts:)
         return posts if posts.empty?
 
@@ -35,15 +35,15 @@ module Wikidotrb
         posts
       end
 
-      # 親投稿をリビジョンに取得する
+      # Retrieve parent post for revisions
       def get_parent_post
         ForumPostCollection.acquire_parent_post(thread: @thread, posts: self)
       end
 
-      # 投稿情報を取得して設定する
-      # @param thread [ForumThread] スレッドオブジェクト
-      # @param posts [Array<ForumPost>] 投稿オブジェクトのリスト
-      # @return [Array<ForumPost>] 更新された投稿のリスト
+      # Retrieve and set post information
+      # @param thread [ForumThread] Thread object
+      # @param posts [Array<ForumPost>] List of post objects
+      # @return [Array<ForumPost>] Updated list of posts
       def self.acquire_post_info(thread:, posts:)
         return posts if posts.empty?
 
@@ -68,7 +68,7 @@ module Wikidotrb
         posts
       end
 
-      # 投稿情報をリビジョンに取得する
+      # Retrieve post information for revisions
       def get_post_info
         ForumPostCollection.acquire_post_info(thread: @thread, posts: self)
       end
@@ -78,7 +78,7 @@ module Wikidotrb
       attr_accessor :site, :id, :forum, :thread, :parent_id, :created_by, :created_at, :edited_by, :edited_at,
                     :source_text, :source_ele, :parent, :title, :source
 
-      # 初期化メソッド
+      # Initialization method
       def initialize(site:, id:, forum:, thread: nil, parent_id: nil, created_by: nil, created_at: nil, edited_by: nil,
                      edited_at: nil, source_text: nil, source_ele: nil)
         @site = site
@@ -97,36 +97,36 @@ module Wikidotrb
         @source = nil
       end
 
-      # 親投稿を設定する
+      # Set parent post
 
-      # タイトルを設定する
+      # Set title
 
-      # ソースを設定する
+      # Set source
 
-      # 投稿のURLを取得する
+      # Get the post URL
       def get_url
         "#{@thread.get_url}#post-#{@id}"
       end
 
-      # 親投稿のゲッターメソッド
+      # Parent post getter method
       def parent
         ForumPostCollection.new(thread: @thread, posts: [self]).get_parent_post unless @parent
         @parent
       end
 
-      # タイトルのゲッターメソッド
+      # Title getter method
       def title
         ForumPostCollection.new(thread: @thread, posts: [self]).get_post_info unless @title
         @title
       end
 
-      # ソースのゲッターメソッド
+      # Source getter method
       def source
         ForumPostCollection.new(thread: @thread, posts: [self]).get_post_info unless @source
         @source
       end
 
-      # 投稿への返信を行う
+      # Reply to the post
       def reply(title: "", source: "")
         client = @site.client
         client.login_check
@@ -158,7 +158,7 @@ module Wikidotrb
         )
       end
 
-      # 投稿の編集を行う
+      # Edit the post
       def edit(title: nil, source: nil)
         client = @site.client
         client.login_check
@@ -204,7 +204,7 @@ module Wikidotrb
         self
       end
 
-      # 投稿の削除を行う
+      # Delete the post
       def destroy
         @site.client.login_check
         @site.amc_request(

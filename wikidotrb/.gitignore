@@ -11,3 +11,11 @@
 .rspec_status
 config.yml
 Gemfile.lock
+
+# Generated documentation
+/docs/_site/
+/docs/api/yard/
+/docs/api/rdoc/
+/docs/api/rbs/
+/llms.txt
+/llms-full.txt
