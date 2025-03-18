@@ -1,11 +1,14 @@
 --markup markdown
 --markup-provider redcarpet
 --title "Wikidotrb Documentation"
+--time-zone "Asia/Tokyo"
 --protected
 --private
 --hide-void-return
 --embed-mixins
 --exclude /vendor/
+--main lib/wikidotrb.rb
+--default-return ''
 lib/**/*.rb
 -
 CHANGELOG.md

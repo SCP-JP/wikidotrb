@@ -2,6 +2,25 @@
 
 require_relative "wikidotrb/version"
 
+# Wikidotrb - Ruby library for interacting with Wikidot sites
+#
+# This library provides a set of tools to interact with Wikidot sites through their
+# AJAX Module Connector (AMC) interface. It allows for tasks such as:
+#
+# * Logging in and managing authentication
+# * Reading and editing pages
+# * Managing forum discussions
+# * Working with user accounts
+# * Interacting with site settings
+#
+# For getting started, see {Wikidotrb::Module::Client} which is the main entry point.
+#
+# @example Basic usage with authentication
+#   client = Wikidotrb::Module::Client.new(username: "your_username", password: "your_password")
+#   site = client.site.get("your-site")
+#   pages = site.pages
+#
+# @author The Wikidotrb Contributors
 module Wikidotrb
   class Error < StandardError; end
 

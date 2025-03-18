@@ -41,6 +41,13 @@ jobs:
           mkdir -p _site
           # Copy documentation directly to the site root
           cp -R wikidotrb/docs/api/yard/* _site/
+          
+          # Create redirect from root to index.html
+          echo '<meta http-equiv="refresh" content="0;url=index.html">' > _site/index.html
+          # Copy appropriate content to index.html if it doesn't exist
+          if [ ! -f _site/index.html ]; then
+            cp _site/_index.html _site/index.html
+          fi
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

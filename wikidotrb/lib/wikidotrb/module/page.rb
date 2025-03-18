@@ -142,16 +142,16 @@ module Wikidotrb
         # Initialize query
         query_dict = query.to_h
         query_dict["moduleName"] = "list/ListPagesModule"
-        query_dict["module_body"] = %([[div class="page"]]#{
+        query_dict["module_body"] = %(\[\[div class="page"\]\]#{
           DEFAULT_MODULE_BODY.map do |key|
             <<~WIKIDOT.chomp
-              [[span class="set #{key}"]]
-                [[span class="name"]]#{key}[[/span]]
-                [[span class="value"]]%%#{key}%%[[/span]]
-              [[/span]]
+              \[\[span class="set #{key}"\]\]
+                \[\[span class="name"\]\]#{key}\[\[/span\]\]
+                \[\[span class="value"\]\]%%#{key}%%\[\[/span\]\]
+              \[\[/span\]\]
             WIKIDOT
           end.join
-        }[[/div]])
+        }\[\[/div\]\])
 
         begin
           # Initial request
