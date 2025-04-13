@@ -1,4 +1,4 @@
-の# frozen_string_literal: true
+# frozen_string_literal: true
 
 require "nokogiri"
 require "date"
