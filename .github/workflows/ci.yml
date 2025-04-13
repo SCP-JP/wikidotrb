@@ -17,39 +17,39 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - '3.3.0'
+          - "3.3.0"
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
 
-    - name: Install dependencies
-      run: bundle install --jobs 4 --retry 3
-      working-directory: wikidotrb
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+        working-directory: wikidotrb
 
-    - name: Make config.yml
-      run: |
-        echo "test:" > wikidotrb/config.yml
-        echo "  username: '${{ secrets.WIKIDOT_USERNAME }}'" >> wikidotrb/config.yml
-        echo "  password: '${{ secrets.WIKIDOT_PASSWORD }}'" >> wikidotrb/config.yml
-        echo "  site: '${{ secrets.WIKIDOT_SITE }}'" >> wikidotrb/config.yml
-      shell: bash
+      - name: Make config.yml
+        run: |
+          echo "test:" > wikidotrb/config.yml
+          echo "  username: '${{ secrets.WIKIDOT_USERNAME }}'" >> wikidotrb/config.yml
+          echo "  password: '${{ secrets.WIKIDOT_PASSWORD }}'" >> wikidotrb/config.yml
+          echo "  site: '${{ secrets.WIKIDOT_SITE }}'" >> wikidotrb/config.yml
+        shell: bash
 
-    - name: Run tests and collect logs
-      run: |
-        mkdir -p logs
-        bundle exec rspec --format RspecJunitFormatter --out logs/rspec.xml --format progress
-        bundle exec rspec --format documentation
-      working-directory: wikidotrb
-      continue-on-error: true
+      - name: Run tests and collect logs
+        run: |
+          mkdir -p logs
+          bundle exec rspec --format RspecJunitFormatter --out logs/rspec.xml --format progress
+          bundle exec rspec --format documentation
+        working-directory: wikidotrb
+        continue-on-error: true
 
-    - name: Upload coverage and logs as artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: logs-and-coverage
-        path: |
-          wikidotrb/logs
+      - name: Upload coverage and logs as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-and-coverage
+          path: |
+            wikidotrb/logs
