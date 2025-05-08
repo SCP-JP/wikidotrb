@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: Wikidotrb
+  
+    &mdash; Wikidotrb Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Wikidotrb";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="index.html">Index (W)</a> &raquo;
+    
+    
+    <span class="title">Wikidotrb</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: Wikidotrb
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/wikidotrb.rb<span class="defines">,<br />
+  lib/wikidotrb/version.rb,<br /> lib/wikidotrb/module/auth.rb,<br /> lib/wikidotrb/module/page.rb,<br /> lib/wikidotrb/module/site.rb,<br /> lib/wikidotrb/module/user.rb,<br /> lib/wikidotrb/module/forum.rb,<br /> lib/wikidotrb/common/logger.rb,<br /> lib/wikidotrb/connector/api.rb,<br /> lib/wikidotrb/module/client.rb,<br /> lib/wikidotrb/connector/ajax.rb,<br /> lib/wikidotrb/util/stringutil.rb,<br /> lib/wikidotrb/util/parser/user.rb,<br /> lib/wikidotrb/util/requestutil.rb,<br /> lib/wikidotrb/common/decorators.rb,<br /> lib/wikidotrb/common/exceptions.rb,<br /> lib/wikidotrb/module/forum_post.rb,<br /> lib/wikidotrb/module/page_votes.rb,<br /> lib/wikidotrb/util/parser/odate.rb,<br /> lib/wikidotrb/module/forum_group.rb,<br /> lib/wikidotrb/module/page_source.rb,<br /> lib/wikidotrb/module/forum_thread.rb,<br /> lib/wikidotrb/module/page_revision.rb,<br /> lib/wikidotrb/module/forum_category.rb,<br /> lib/wikidotrb/util/table/char_table.rb,<br /> lib/wikidotrb/module/private_message.rb,<br /> lib/wikidotrb/module/site_application.rb</span>
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>Wikidotrb - Ruby library for interacting with Wikidot sites</p>
+
+<p>This library provides a set of tools to interact with Wikidot sites through their
+AJAX Module Connector (AMC) interface. It allows for tasks such as:</p>
+
+<ul>
+<li>Logging in and managing authentication</li>
+<li>Reading and editing pages</li>
+<li>Managing forum discussions</li>
+<li>Working with user accounts</li>
+<li>Interacting with site settings</li>
+</ul>
+
+<p>For getting started, see <span class='object_link'><a href="Wikidotrb/Module/Client.html" title="Wikidotrb::Module::Client (class)">Module::Client</a></span> which is the main entry point.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Basic usage with authentication</p>
+</div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_client'>client</span> <span class='op'>=</span> <span class='const'>Wikidotrb</span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Wikidotrb/Module.html" title="Wikidotrb::Module (module)">Module</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Wikidotrb/Module/Client.html" title="Wikidotrb::Module::Client (class)">Client</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Wikidotrb/Module/Client.html#initialize-instance_method" title="Wikidotrb::Module::Client#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>username:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>your_username</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>password:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>your_password</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_site'>site</span> <span class='op'>=</span> <span class='id identifier rubyid_client'>client</span><span class='period'>.</span><span class='id identifier rubyid_site'>site</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>your-site</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_pages'>pages</span> <span class='op'>=</span> <span class='id identifier rubyid_site'>site</span><span class='period'>.</span><span class='id identifier rubyid_pages'>pages</span></code></pre>
+    
+  </div>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'><p>The Wikidotrb Contributors</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Wikidotrb/Common.html" title="Wikidotrb::Common (module)">Common</a></span>, <span class='object_link'><a href="Wikidotrb/Connector.html" title="Wikidotrb::Connector (module)">Connector</a></span>, <span class='object_link'><a href="Wikidotrb/Module.html" title="Wikidotrb::Module (module)">Module</a></span>, <span class='object_link'><a href="Wikidotrb/Table.html" title="Wikidotrb::Table (module)">Table</a></span>, <span class='object_link'><a href="Wikidotrb/Util.html" title="Wikidotrb::Util (module)">Util</a></span>
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Wikidotrb/Error.html" title="Wikidotrb::Error (class)">Error</a></span>
+    
+  
+</p>
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="VERSION-constant" class="">VERSION =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>3.0.7.pre.6</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+      <div id="footer">
+  Generated on Thu May  8 05:58:33 2025 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.37 (ruby-3.2.8).
+</div>
+
+    </div>
+  </body>
+</html>
